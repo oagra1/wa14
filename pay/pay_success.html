@@ -194,6 +194,10 @@
 
     let basicLogInfo = getBasicLogInfo()
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    const transactionId = sessionId; // compatibilidade com código existente
+
     const bulkSenderPlanInfo = [
       {
         id: 101,
@@ -535,7 +539,8 @@
       document.body.removeChild(el)
     }
     window.onload = function () {
-      let utm_campaign = getUrlParams(window.location.href)['utm_campaign']
+      const paramMap = getUrlParams(window.location.href)
+      const utm_campaign = transactionId || paramMap['utm_campaign']
       getActiveCode(utm_campaign)
     }
     function getUrlParams(url) {
@@ -574,7 +579,7 @@
       if (transaction_id) {
         let requestObj = { transaction_id: transaction_id }
         let httpRequest = new XMLHttpRequest() //第一步：创建需要的对象
-        httpRequest.open('POST', 'https://wawebsender.com/api/wapi/get-transaction-info', true) //第二步：dev
+        httpRequest.open('POST', 'https://wxchpwltgfbpnanpjtwi.supabase.co/functions/v1/checkout-lookup', true) //第二步：dev
         httpRequest.setRequestHeader('Content-type', 'application/json') //设置请求头 注：post方式必须设置请求头（在建立连接后设置请求头）
         httpRequest.send(JSON.stringify(requestObj)) //发送请求 将情头体写在send中
         /**
